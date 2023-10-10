@@ -1,14 +1,16 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-
+canvas.height = 600;
+canvas.width = 600;
 const size = 30;
+movement = 300;
 
 const snake = [
   { x: 200, y: 200 },
   { x: 230, y: 200 },
 ];
 
-let direction;
+let direction, loopId;
 
 const drawSnake = () => {
   ctx.fillStyle = "#888";
@@ -39,13 +41,20 @@ const moveSnake = () => {
     case "down":
       snake.push({ x: head.x, y: head.y + size });
       break;
-    }
-    snake.shift();
+  }
+  snake.shift(); // remove the first element
 };
 
-setInterval(() => {
-  ctx.clearRect(0, 0, 600, 600);
-
-  moveSnake();
+const gameLoop = () => {
+  clearInterval(loopId);
+  ctx.clearRect(0, 0, canvas.height, canvas.width);
   drawSnake();
-}, 300);
+  moveSnake();
+
+  loopId = setTimeout(() => {
+    gameLoop();
+  }, movement);
+};
+
+gameLoop();
+// 35,3
