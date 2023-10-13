@@ -1,13 +1,49 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-canvas.height = 600;
-canvas.width = 600;
-const size = 30;
-movement = 300;
+const canvasSize = 600;
+canvas.height = canvasSize;
+canvas.width = canvasSize;
+const h1 = document.querySelector("h1");
+
+const segmentSize = 30;
+const movement = 300;
 
 const snake = [{ x: 270, y: 240 }];
 
+const randomNumber = (min, max) => {
+  return Math.round(Math.random() * (max - min) + min);
+};
+
+const randomPosition = () => {
+  const number = randomNumber(0, canvas.width - segmentSize);
+  return Math.round(number / segmentSize) * segmentSize;
+}
+
+const randomColor = () => {
+  const rgbColors = Array.from({ length: 3 }, () => randomNumber(0, 255));
+  return `rgb(${rgbColors.join(', ')})`;
+}
+
+h1.innerText = randomColor();
+
+const food = {
+  x: randomPosition(),
+  y: randomPosition(),
+  color: randomColor(),
+};
+
 let direction, loopId;
+
+const drawFood = () => {
+
+  const { x, y, color } = food;
+
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 10;
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, segmentSize, segmentSize);
+  ctx.shadowBlur = 0;
+};
 
 const drawSnake = () => {
   ctx.fillStyle = "#888";
@@ -16,7 +52,7 @@ const drawSnake = () => {
       ctx.fillStyle = "#ddd";
     }
 
-    ctx.fillRect(position.x, position.y, size, size);
+    ctx.fillRect(position.x, position.y, segmentSize, segmentSize);
   });
 };
 
@@ -27,25 +63,25 @@ const moveSnake = () => {
 
   switch (direction) {
     case "right":
-      snake.push({ x: head.x + size, y: head.y });
+      snake.push({ x: head.x + segmentSize, y: head.y });
       break;
     case "left":
-      snake.push({ x: head.x - size, y: head.y });
+      snake.push({ x: head.x - segmentSize, y: head.y });
       break;
     case "up":
-      snake.push({ x: head.x, y: head.y - size });
+      snake.push({ x: head.x, y: head.y - segmentSize });
       break;
     case "down":
-      snake.push({ x: head.x, y: head.y + size });
+      snake.push({ x: head.x, y: head.y + segmentSize });
       break;
   }
   snake.shift(); // remove the first element
 };
 
 const drawGrid = () => {
-  ctx.lineWidth = 0.08;
-  ctx.strokeStyle = "#ddd";
-  for (let i = 30; i < canvas.height; i += size) {
+  ctx.lineWidth = 1.2;
+  ctx.strokeStyle = "#191919";
+  for (let i = 30; i < canvas.height; i += segmentSize) {
     ctx.beginPath();
     ctx.moveTo(0, i);
     ctx.lineTo(canvas.width, i);
@@ -57,20 +93,21 @@ const drawGrid = () => {
   }
 };
 
-drawGrid();
 
 const gameLoop = () => {
   clearInterval(loopId);
   ctx.clearRect(0, 0, canvas.height, canvas.width);
-  drawSnake();
+  drawGrid();
+  drawFood();
   moveSnake();
+  drawSnake();
 
   loopId = setTimeout(() => {
     gameLoop();
   }, movement);
 };
 
-// gameLoop();
+gameLoop();
 
 document.addEventListener("keydown", ({ key }) => {
   if (key === "ArrowRight" && direction !== "left") direction = "right";
