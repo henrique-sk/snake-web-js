@@ -1,11 +1,14 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 const canvasSize = 600;
+const audio = new Audio("../assets/audio.mp3");
 canvas.height = canvasSize;
 canvas.width = canvasSize;
-const h1 = document.querySelector("h1");
+
+// const h1 = document.querySelector("h1");
 
 const segmentSize = 30;
+const canvasEdge = canvasSize - segmentSize;
 const movement = 300;
 
 const snake = [{ x: 270, y: 240 }];
@@ -17,14 +20,14 @@ const randomNumber = (min, max) => {
 const randomPosition = () => {
   const number = randomNumber(0, canvas.width - segmentSize);
   return Math.round(number / segmentSize) * segmentSize;
-}
+};
 
 const randomColor = () => {
   const rgbColors = Array.from({ length: 3 }, () => randomNumber(0, 255));
-  return `rgb(${rgbColors.join(', ')})`;
-}
+  return `rgb(${rgbColors.join(", ")})`;
+};
 
-h1.innerText = randomColor();
+// h1.innerText = randomColor();
 
 const food = {
   x: randomPosition(),
@@ -35,7 +38,6 @@ const food = {
 let direction, loopId;
 
 const drawFood = () => {
-
   const { x, y, color } = food;
 
   ctx.shadowColor = color;
@@ -93,6 +95,42 @@ const drawGrid = () => {
   }
 };
 
+const checkEat = () => {
+  const head = snake[snake.length - 1];
+  if (head.x === food.x && head.y === food.y) {
+    snake.push(head);
+    // snake.unshift(head);
+    audio.play();
+
+    let x = randomPosition();
+    let y = randomPosition();
+
+    while (snake.some((position) => position.x === x && position.y === y)) {
+      x = randomPosition();
+      y = randomPosition();
+    }
+
+    /* while (snake.find(position => position.x === x && position.y === y)) {
+      x = randomPosition();
+      y = randomPosition();
+    } */
+
+    food.x = x;
+    food.y = y;
+    food.color = randomColor();
+  }
+};
+
+const checkCollision = () => {
+  const head = snake[snake.length - 1];
+
+  const wallCollision =
+    head.x < 0 || head.x > canvasEdge || head.y < 0 || head.y > canvasEdge;
+
+  if (wallCollision) {
+    alert("Game Over");
+  }
+};
 
 const gameLoop = () => {
   clearInterval(loopId);
@@ -101,6 +139,8 @@ const gameLoop = () => {
   drawFood();
   moveSnake();
   drawSnake();
+  checkEat();
+  checkCollision();
 
   loopId = setTimeout(() => {
     gameLoop();
