@@ -8,7 +8,7 @@ canvas.width = canvasSize;
 // const h1 = document.querySelector("h1");
 
 const segmentSize = 30;
-const canvasEdge = canvasSize - segmentSize;
+const canvasLimit = canvasSize - segmentSize;
 const movement = 300;
 
 const snake = [{ x: 270, y: 240 }];
@@ -125,7 +125,7 @@ const checkCollision = () => {
   const head = snake[snake.length - 1];
 
   const wallCollision =
-    head.x < 0 || head.x > canvasEdge || head.y < 0 || head.y > canvasEdge;
+    head.x < 0 || head.x > canvasLimit || head.y < 0 || head.y > canvasLimit;
 
   if (wallCollision) {
     alert("Game Over");
