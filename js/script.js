@@ -5,13 +5,26 @@ const audio = new Audio("../assets/audio.mp3");
 canvas.height = canvasSize;
 canvas.width = canvasSize;
 
+/*
+ * Mudanças em relação ao tutorial
+ *
+ * 1. Criação de variáveis para valores ou cálculos que são usados mais de uma vez:
+ * 1.1. canvasLimit: valor máximo que a cobra pode andar no eixo x e y. Retirada do escopo de função para o escopo global.
+ * 
+ * 2. Decisão de alterações pontuais no código:
+ * 2.1. No while da função checkEat, foi alterado o método some (que retorna booleano) para find (que retorna o valor), apesar de ambas estarem corretas, preferi o retorno booleano visto que o valor não será usado.
+ */
+
 // const h1 = document.querySelector("h1");
 
 const segmentSize = 30;
 const canvasLimit = canvasSize - segmentSize;
 const movement = 300;
 
-const snake = [{ x: 270, y: 240 }];
+const snake = [
+  { x: 270, y: 240 },
+  { x: 300, y: 240 },
+];
 
 const randomNumber = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
@@ -110,11 +123,6 @@ const checkEat = () => {
       y = randomPosition();
     }
 
-    /* while (snake.find(position => position.x === x && position.y === y)) {
-      x = randomPosition();
-      y = randomPosition();
-    } */
-
     food.x = x;
     food.y = y;
     food.color = randomColor();
@@ -123,13 +131,23 @@ const checkEat = () => {
 
 const checkCollision = () => {
   const head = snake[snake.length - 1];
+  const neckIndex = snake.length - 2;
 
   const wallCollision =
     head.x < 0 || head.x > canvasLimit || head.y < 0 || head.y > canvasLimit;
 
-  if (wallCollision) {
-    alert("Game Over");
+  const selfCollision = snake.find((position, index) => {
+    return index < neckIndex && position.x === head.x && position.y === head.y;
+  });
+
+  if (wallCollision || selfCollision) {
+    gameOver();
+    // alert("Game Over!");
   }
+};
+
+const gameOver = () => {
+  direction = undefined;
 };
 
 const gameLoop = () => {
