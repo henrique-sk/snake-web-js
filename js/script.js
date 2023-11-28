@@ -1,3 +1,18 @@
+/*
+ * Mudanças em relação ao tutorial
+ *
+ * 1. Criação de variáveis para valores ou cálculos que são usados mais de uma vez:
+ * 1.1. canvasSize: tamanho do canvas. Retirada do escopo de função para o escopo global.
+ * 1.2. canvasLimit: valor máximo que a cobra pode andar no eixo x e y. Retirada do escopo de função para o escopo global.
+ * 1.3. canvas.height e canvas.width: valores do tamanho do canvas. Retirada do escopo de função para o escopo global.
+ * 
+ * 2. Decisão de alterações pontuais no código:
+ * 2.1. const randomColor: criei uma array function para retornar o valor rgb, e usei o método join para transformar a array em uma string separada por vírgula.
+ * 2.3. Na verificação do moveSnake optei por usar um switch case ao invés de if else if, pois acho que fica mais legível.
+ * 2.3. No while da função checkEat, foi alterado o método some (que retorna booleano) para find (que retorna o valor), apesar de ambas estarem corretas, preferi o retorno booleano visto que o valor não será usado.
+ * 2.4. O tamanho inicial da cobra possui 2 segmentos ao invés de 1, e ao preencher a variável snake usei o operador spread (...) para copiar o array initialSnake.
+ */
+
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -10,17 +25,6 @@ const canvasSize = 600;
 const audio = new Audio("../assets/audio.mp3");
 canvas.height = canvasSize;
 canvas.width = canvasSize;
-
-/*
- * Mudanças em relação ao tutorial
- *
- * 1. Criação de variáveis para valores ou cálculos que são usados mais de uma vez:
- * 1.1. canvasLimit: valor máximo que a cobra pode andar no eixo x e y. Retirada do escopo de função para o escopo global.
- * 
- * 2. Decisão de alterações pontuais no código:
- * 2.1. No while da função checkEat, foi alterado o método some (que retorna booleano) para find (que retorna o valor), apesar de ambas estarem corretas, preferi o retorno booleano visto que o valor não será usado.
- * 2.2. O tamanho inicial da cobra possui 2 segmentos ao invés de 1, e ao preencher a variável snake usei o operador spread para copiar o array initialSnake.
- */
 
 // const h1 = document.querySelector("h1");
 
@@ -156,7 +160,6 @@ const checkCollision = () => {
 
   if (wallCollision || selfCollision) {
     gameOver();
-    // alert("Game Over!");
   }
 };
 
