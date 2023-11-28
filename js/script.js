@@ -1,11 +1,11 @@
 /*
- * Mudanças em relação ao tutorial
+ * Algumas mudanças em relação ao tutorial
  *
  * 1. Criação de variáveis para valores ou cálculos que são usados mais de uma vez:
  * 1.1. canvasSize: tamanho do canvas. Retirada do escopo de função para o escopo global.
  * 1.2. canvasLimit: valor máximo que a cobra pode andar no eixo x e y. Retirada do escopo de função para o escopo global.
  * 1.3. canvas.height e canvas.width: valores do tamanho do canvas. Retirada do escopo de função para o escopo global.
- * 
+ *
  * 2. Decisão de alterações pontuais no código:
  * 2.1. const randomColor: criei uma array function para retornar o valor rgb, e usei o método join para transformar a array em uma string separada por vírgula.
  * 2.3. Na verificação do moveSnake optei por usar um switch case ao invés de if else if, pois acho que fica mais legível.
@@ -34,8 +34,8 @@ const movement = 300;
 const initialSnake = [
   { x: 270, y: 240 },
   { x: 300, y: 240 },
+  { x: 330, y: 240 },
 ];
-
 
 let snake = [...initialSnake];
 
@@ -188,11 +188,32 @@ const gameLoop = () => {
 
 gameLoop();
 
+// Havia um bug em que a cobra poderia voltar na direção oposta e colidir com o próprio corpo, uma solução proposta para corrigir isso pelo usuário MatheusHDC, foi criar uma variável neck (pescoço) no evento keydown que armazena a posição do segundo segmento da cobra, e verificar se a cabeça está na mesma posição do neck, se estiver, não permitir que a cobra vá na direção oposta. Essa solução só começa a funcionar quando a cobra tem 3 segmentos ou mais, por isso a verificação se o neck existe, caso não exista, a cobra pode ir para qualquer direção. Testei para quando a cobra tivesse 2 segmentos (const neck = snake[snake.length - 2] || false;), e apesar de ter funcionado, ao pegar uma comida, a cobra não podia mudar a direção imediatamente, somente quando o terceiro segmento era criado, então optei por deixar a verificação do neck para quando a cobra tivesse 3 segmentos ou mais e deixei o corpo inicial setado em 3 segmentos. A partir dessa solução, notei que ao iniciar o jogo, o jogador ficava sem opção de começar pela direita, então adicionei uma verificação da posição inicial do pescoço da cobra, se a posição for a inicial, agora a cobra pode iniciar para a direita.
 document.addEventListener("keydown", ({ key }) => {
-  if (key === "ArrowRight" && direction !== "left") direction = "right";
-  if (key === "ArrowLeft" && direction !== "right") direction = "left";
-  if (key === "ArrowUp" && direction !== "down") direction = "up";
-  if (key === "ArrowDown" && direction !== "up") direction = "down";
+  const head = snake[snake.length - 1];
+  const neck = snake[snake.length - 3] || false;
+
+  const xAprove = head.y !== neck.y || !neck;
+  const yAprove = head.x !== neck.x || !neck;
+
+  if (
+    (neck.x === initialSnake[0].x && neck.y === initialSnake[0].y) ||
+    (key === "ArrowRight" && xAprove && direction !== "left")
+  ) {
+    direction = "right";
+  }
+
+  if (key === "ArrowLeft" && xAprove && direction !== "right") {
+    direction = "left";
+  }
+
+  if (key === "ArrowDown" && yAprove && direction !== "up") {
+    direction = "down";
+  }
+
+  if (key === "ArrowUp" && yAprove && direction !== "down") {
+    direction = "up";
+  }
 });
 
 buttonPlay.addEventListener("click", () => {
