@@ -19,6 +19,7 @@ canvas.width = canvasSize;
  * 
  * 2. Decisão de alterações pontuais no código:
  * 2.1. No while da função checkEat, foi alterado o método some (que retorna booleano) para find (que retorna o valor), apesar de ambas estarem corretas, preferi o retorno booleano visto que o valor não será usado.
+ * 2.2. O tamanho inicial da cobra possui 2 segmentos ao invés de 1, e ao preencher a variável snake usei o operador spread para copiar o array initialSnake.
  */
 
 // const h1 = document.querySelector("h1");
@@ -26,11 +27,13 @@ canvas.width = canvasSize;
 const segmentSize = 30;
 const canvasLimit = canvasSize - segmentSize;
 const movement = 300;
-
-const snake = [
+const initialSnake = [
   { x: 270, y: 240 },
   { x: 300, y: 240 },
 ];
+
+
+let snake = [...initialSnake];
 
 const incrementScore = () => {
   score.innerText = +score.innerText + 10;
@@ -187,4 +190,12 @@ document.addEventListener("keydown", ({ key }) => {
   if (key === "ArrowLeft" && direction !== "right") direction = "left";
   if (key === "ArrowUp" && direction !== "down") direction = "up";
   if (key === "ArrowDown" && direction !== "up") direction = "down";
+});
+
+buttonPlay.addEventListener("click", () => {
+  menu.style.display = "none";
+  canvas.style.filter = "none";
+  score.innerText = "00";
+
+  snake = [...initialSnake];
 });
