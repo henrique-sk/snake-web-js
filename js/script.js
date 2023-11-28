@@ -1,5 +1,26 @@
+/*
+ * Mudanças em relação ao tutorial
+ *
+ * 1. Criação de variáveis para valores ou cálculos que são usados mais de uma vez:
+ * 1.1. canvasSize: tamanho do canvas. Retirada do escopo de função para o escopo global.
+ * 1.2. canvasLimit: valor máximo que a cobra pode andar no eixo x e y. Retirada do escopo de função para o escopo global.
+ * 1.3. canvas.height e canvas.width: valores do tamanho do canvas. Retirada do escopo de função para o escopo global.
+ * 
+ * 2. Decisão de alterações pontuais no código:
+ * 2.1. const randomColor: criei uma array function para retornar o valor rgb, e usei o método join para transformar a array em uma string separada por vírgula.
+ * 2.3. Na verificação do moveSnake optei por usar um switch case ao invés de if else if, pois acho que fica mais legível.
+ * 2.3. No while da função checkEat, foi alterado o método some (que retorna booleano) para find (que retorna o valor), apesar de ambas estarem corretas, preferi o retorno booleano visto que o valor não será usado.
+ * 2.4. O tamanho inicial da cobra possui 2 segmentos ao invés de 1, e ao preencher a variável snake usei o operador spread (...) para copiar o array initialSnake.
+ */
+
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+
+const score = document.querySelector(".score--value");
+const finalScore = document.querySelector(".final-score > span");
+const menu = document.querySelector(".menu-screen");
+const buttonPlay = document.querySelector(".btn-play");
+
 const canvasSize = 600;
 const audio = new Audio("../assets/audio.mp3");
 canvas.height = canvasSize;
@@ -10,8 +31,17 @@ canvas.width = canvasSize;
 const segmentSize = 30;
 const canvasLimit = canvasSize - segmentSize;
 const movement = 300;
+const initialSnake = [
+  { x: 270, y: 240 },
+  { x: 300, y: 240 },
+];
 
-const snake = [{ x: 270, y: 240 }];
+
+let snake = [...initialSnake];
+
+const incrementScore = () => {
+  score.innerText = +score.innerText + 10;
+};
 
 const randomNumber = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
@@ -98,6 +128,7 @@ const drawGrid = () => {
 const checkEat = () => {
   const head = snake[snake.length - 1];
   if (head.x === food.x && head.y === food.y) {
+    incrementScore();
     snake.push(head);
     // snake.unshift(head);
     audio.play();
@@ -110,11 +141,6 @@ const checkEat = () => {
       y = randomPosition();
     }
 
-    /* while (snake.find(position => position.x === x && position.y === y)) {
-      x = randomPosition();
-      y = randomPosition();
-    } */
-
     food.x = x;
     food.y = y;
     food.color = randomColor();
@@ -123,13 +149,26 @@ const checkEat = () => {
 
 const checkCollision = () => {
   const head = snake[snake.length - 1];
+  const neckIndex = snake.length - 2;
 
   const wallCollision =
     head.x < 0 || head.x > canvasLimit || head.y < 0 || head.y > canvasLimit;
 
-  if (wallCollision) {
-    alert("Game Over");
+  const selfCollision = snake.find((position, index) => {
+    return index < neckIndex && position.x === head.x && position.y === head.y;
+  });
+
+  if (wallCollision || selfCollision) {
+    gameOver();
   }
+};
+
+const gameOver = () => {
+  direction = undefined;
+
+  menu.style.display = "flex";
+  finalScore.innerText = score.innerText;
+  canvas.style.filter = "blur(4px)";
 };
 
 const gameLoop = () => {
@@ -154,4 +193,12 @@ document.addEventListener("keydown", ({ key }) => {
   if (key === "ArrowLeft" && direction !== "right") direction = "left";
   if (key === "ArrowUp" && direction !== "down") direction = "up";
   if (key === "ArrowDown" && direction !== "up") direction = "down";
+});
+
+buttonPlay.addEventListener("click", () => {
+  menu.style.display = "none";
+  canvas.style.filter = "none";
+  score.innerText = "00";
+
+  snake = [...initialSnake];
 });
