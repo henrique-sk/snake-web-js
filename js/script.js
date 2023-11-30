@@ -42,6 +42,8 @@ const randomColor = () => {
   return `rgb(${rgbColors.join(", ")})`;
 };
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 // h1.innerText = randomColor();
 
 const food = {
@@ -50,10 +52,29 @@ const food = {
   color: randomColor(),
 };
 
+const specialFood = {
+  x: randomPosition(),
+  y: randomPosition(),
+  color: "orange",
+  effect: "grow",
+  timer: 5000,
+  additionalSegments: 0,
+};
+
 let direction, loopId;
 
 const drawFood = () => {
   const { x, y, color } = food;
+
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 10;
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, segmentSize, segmentSize);
+  ctx.shadowBlur = 0;
+};
+
+const drawSpecialFood = () => {
+  const { x, y, color } = specialFood;
 
   ctx.shadowColor = color;
   ctx.shadowBlur = 10;
@@ -132,6 +153,43 @@ const checkEat = () => {
   }
 };
 
+const checkSpecialEat = () => {
+  const head = snake[snake.length - 1];
+  if (head.x === specialFood.x && head.y === specialFood.y) {
+    applySpecialEffect(specialFood.effect);
+    resetSpecialFood();
+  }
+};
+
+const applySpecialEffect = (effect) => {
+  switch (effect) {
+    case "grow":
+      specialFood.additionalSegments += 3;
+      break;
+  }
+};
+
+const resetSpecialFood = () => {
+  specialFood.x = randomPosition();
+  specialFood.y = randomPosition();
+  specialFood.timer = 5000;
+};
+
+const updateSpecialFoodTimer = () => {
+  if (specialFood.timer > 0) {
+    specialFood.timer -= movement;
+  } else {
+    resetSpecialFood();
+  }
+};
+
+const addAdditionalSegments = () => {
+  for (let i = 0; i < specialFood.additionalSegments; i++) {
+    snake.push(snake[snake.length - 1]);
+  }
+  specialFood.additionalSegments = 0;
+};
+
 const checkCollision = () => {
   const head = snake[snake.length - 1];
   const neckIndex = snake.length - 2;
@@ -161,10 +219,14 @@ const gameLoop = () => {
   ctx.clearRect(0, 0, canvas.height, canvas.width);
   drawGrid();
   drawFood();
+  drawSpecialFood();
+  addAdditionalSegments();
   moveSnake();
   drawSnake();
   checkEat();
+  checkSpecialEat();
   checkCollision();
+  updateSpecialFoodTimer();
 
   loopId = setTimeout(() => {
     gameLoop();
