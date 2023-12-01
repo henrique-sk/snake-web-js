@@ -24,9 +24,18 @@ const initialSnake = [
 
 let snake = [...initialSnake];
 
+let chanceOfSpecialFood = 0;
+let chanceOfEffect = 0;
+
 const incrementScore = () => {
   score.innerText = +score.innerText + 10;
 };
+
+const decrementScore = () => {
+  if (score.innerText >= 30) {
+    score.innerText = +score.innerText - 30;
+  }
+}
 
 const randomNumber = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
@@ -53,12 +62,12 @@ const food = {
 };
 
 const specialFood = {
-  x: randomPosition(),
-  y: randomPosition(),
-  color: "orange",
-  effect: "grow",
-  timer: 5000,
-  additionalSegments: 0,
+    x: randomPosition(),
+    y: randomPosition(),
+    color: ["red", "blue"],
+    effect: ["grow", "shrink"],
+    timer: 5000,
+    additionalSegments: 0
 };
 
 let direction, loopId;
@@ -74,13 +83,18 @@ const drawFood = () => {
 };
 
 const drawSpecialFood = () => {
-  const { x, y, color } = specialFood;
-
-  ctx.shadowColor = color;
-  ctx.shadowBlur = 10;
-  ctx.fillStyle = color;
-  ctx.fillRect(x, y, segmentSize, segmentSize);
-  ctx.shadowBlur = 0;
+  if (chanceOfSpecialFood === 3) {    
+    const { x, y, color } = specialFood;
+    
+    ctx.shadowColor = color[chanceOfEffect];
+    ctx.fillStyle = color[chanceOfEffect];
+    ctx.fillRect(x, y, segmentSize, segmentSize);    
+  }
+  if (specialFood.timer <= 0) {
+    chanceOfSpecialFood = randomNumber(3, 3);
+    chanceOfEffect = randomNumber(0, 1);
+    console.log(chanceOfSpecialFood);
+  }
 };
 
 const drawSnake = () => {
@@ -164,6 +178,7 @@ const checkSpecialEat = () => {
 const applySpecialEffect = (effect) => {
   switch (effect) {
     case "grow":
+      incrementScore();
       specialFood.additionalSegments += 3;
       break;
   }
