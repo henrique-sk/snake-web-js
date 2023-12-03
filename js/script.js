@@ -7,7 +7,10 @@ const menu = document.querySelector(".menu-screen");
 const buttonPlay = document.querySelector(".btn-play");
 
 const canvasSize = 600;
-const audio = new Audio("../assets/audio.mp3");
+const audioEat = new Audio("../assets/audioEat.mp3");
+const audioGood = new Audio("../assets/coin-upaif-14631.mp3");
+const audioBad = new Audio("../assets/pixel-death-66829.mp3");
+// coin up - pixel death
 canvas.height = canvasSize;
 canvas.width = canvasSize;
 
@@ -81,7 +84,7 @@ const drawSpecialFood = () => {
   console.log(specialFood.timer);
   const { x, y, colors, chanceOfColor } = specialFood;
   if (specialFood.timer <= 0) {
-    specialFood.chance = randomNumber(1, 3);
+    specialFood.chance = randomNumber(2, 3);
     specialFood.chanceOfColor = randomNumber(0, 2);
   } else if (specialFood.chance === 3) {
     ctx.shadowColor = colors[chanceOfColor];
@@ -145,7 +148,7 @@ const checkEat = () => {
     changeScore(10);
     // snake.push(head);
     snake.unshift(snake[0]);
-    audio.play();
+    audioEat.play();
 
     let x = randomPosition();
     let y = randomPosition();
@@ -178,30 +181,33 @@ const applySpecialEffect = (color) => {
       specialFood.effect = effects[randomNumber(0, 1)];
       changeScore(specialFood.effect === "removePoints" ? -30 : 10);
       specialFood.segmentsToChange += specialFood.effect === "grow" ? 3 : 0;
+      audioBad.play();
       break;
     case "green":
       specialFood.effect = effects[randomNumber(0, 3)];
       changeScore(
         specialFood.effect === "grow" || specialFood.effect === "shrink"
-          ? 10
-          : specialFood.effect === "revomePoints"
-          ? -30
-          : +30
-      );
-      specialFood.segmentsToChange +=
+        ? 10
+        : specialFood.effect === "revomePoints"
+        ? -30
+        : +30
+        );
+        specialFood.segmentsToChange +=
         specialFood.effect === "grow"
-          ? 3
-          : specialFood.effect === "shrink"
-          ? Math.min(3, Math.max(0, snake.length - 3))
-          : 0;
+        ? 3
+        : specialFood.effect === "shrink"
+        ? Math.min(3, Math.max(0, snake.length - 3))
+        : 0;
+        (specialFood.effect === "grow" || specialFood.effect === "removePoints" ? audioBad : audioGood).play();
       break;
     case "blue":
       specialFood.effect = effects[randomNumber(2, 3)];
       changeScore(specialFood.effect === "addPoints" ? 30 : 10);
       specialFood.segmentsToChange +=
-        specialFood.effect === "shrink"
-          ? Math.min(3, Math.max(0, snake.length - 3))
-          : 0;
+      specialFood.effect === "shrink"
+      ? Math.min(3, Math.max(0, snake.length - 3))
+      : 0;
+      audioGood.play();
       break;
   }
 };
@@ -214,7 +220,7 @@ const resetSpecialFood = () => {
 
 const updateSpecialFoodTimer = () => {
   if (specialFood.timer > 0) {
-    specialFood.timer -= movement;
+    specialFood.timer -= 175;
   } else {
     resetSpecialFood();
   }
