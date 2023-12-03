@@ -8,10 +8,34 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
     <link rel="stylesheet" href="./styles/style.css" />
-    <title>Snakie</title>
+    <title>Snake RGB</title>
   </head>
   <body>
-    <h1>Snakie</h1>
+    <h1>
+      Snake
+      <span style="color: red">R</span>
+      <span style="color: green">G</span>
+      <span style="color: blue">B</span>
+    </h1>
+    <div class="settings">
+      <label for="speed-selector">Speed:</label>
+      <select id="speed-selector">
+        <option value="0">Very Slow</option>
+        <option value="1">Slow</option>
+        <option value="2" selected>Normal</option>
+        <option value="3">Fast</option>
+        <option value="4">Very Fast</option>
+      </select>
+
+      <span class="spacer"></span>
+
+      <label for="difficulty-selector">Difficulty:</label>
+      <select id="difficulty-selector">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Difícil</option>
+      </select>
+    </div>
     <div class="score">score: <span class="score--value">00</span></div>
     <div class="menu-screen">
       <span class="game-over">Game Over</span>

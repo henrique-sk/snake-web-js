@@ -27,6 +27,20 @@ canvas {
   background-color: #111;
 }
 
+.settings {
+  display: flex;
+  align-items: center;
+
+  #speed-selector,
+  #difficulty-selector {
+    margin-left: 5px;
+  }
+
+  .spacer {
+    margin-right: 20px;
+  }
+}
+
 .score {
   display: flex;
   flex-direction: column;

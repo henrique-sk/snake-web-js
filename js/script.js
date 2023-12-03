@@ -6,15 +6,28 @@ const finalScore = document.querySelector(".final-score > span");
 const menu = document.querySelector(".menu-screen");
 const buttonPlay = document.querySelector(".btn-play");
 
+const speedSelector = document.getElementById("speed-selector");
+document.getElementById("speed-selector").addEventListener("change", () => {
+  document.getElementById("speed-selector").blur();
+});
+const difficultySelector = document.getElementById("difficulty-selector");
+document.getElementById("difficulty-selector").addEventListener("change", () => {
+  document.getElementById("difficulty-selector").blur();
+});
+
 const canvasSize = 600;
 const audioEat = new Audio("../assets/audioEat.mp3");
 const audioGood = new Audio("../assets/coin-upaif-14631.mp3");
 const audioBad = new Audio("../assets/pixel-death-66829.mp3");
-// coin up - pixel death
+
 canvas.height = canvasSize;
 canvas.width = canvasSize;
 
-// const h1 = document.querySelector("h1");
+let speedLevels = [500, 400, 300, 150, 75];
+let currentSpeedLevel = 2;
+
+let difficultyLevels = ["easy", "normal", "hard"];
+let currentDifficultyLevel = "normal";
 
 const segmentSize = 30;
 const canvasLimit = canvasSize - segmentSize;
@@ -48,8 +61,6 @@ const randomColor = () => {
 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-// h1.innerText = randomColor();
 
 const food = {
   x: randomPosition(),
@@ -85,7 +96,17 @@ const drawSpecialFood = () => {
   const { x, y, colors, chanceOfColor } = specialFood;
   if (specialFood.timer <= 0) {
     specialFood.chance = randomNumber(2, 3);
-    specialFood.chanceOfColor = randomNumber(0, 2);
+    switch (currentDifficultyLevel) {
+      case "easy":
+        specialFood.chanceOfColor = randomNumber(1, 2);
+        break;
+      case "normal":
+        specialFood.chanceOfColor = randomNumber(0, 2);
+        break;
+      case "hard":
+        specialFood.chanceOfColor = randomNumber(0, 1);
+        break;
+    }
   } else if (specialFood.chance === 3) {
     ctx.shadowColor = colors[chanceOfColor];
     ctx.fillStyle = colors[chanceOfColor];
@@ -170,7 +191,6 @@ const checkSpecialEat = () => {
     applySpecialEffect(specialFood.color);
     specialFood.x = -30;
     specialFood.y = -30;
-    // resetSpecialFood();
   }
 };
 
@@ -187,26 +207,29 @@ const applySpecialEffect = (color) => {
       specialFood.effect = effects[randomNumber(0, 3)];
       changeScore(
         specialFood.effect === "grow" || specialFood.effect === "shrink"
-        ? 10
-        : specialFood.effect === "revomePoints"
-        ? -30
-        : +30
-        );
-        specialFood.segmentsToChange +=
+          ? 10
+          : specialFood.effect === "revomePoints"
+          ? -30
+          : +30
+      );
+      specialFood.segmentsToChange +=
         specialFood.effect === "grow"
-        ? 3
-        : specialFood.effect === "shrink"
-        ? Math.min(3, Math.max(0, snake.length - 3))
-        : 0;
-        (specialFood.effect === "grow" || specialFood.effect === "removePoints" ? audioBad : audioGood).play();
+          ? 3
+          : specialFood.effect === "shrink"
+          ? Math.min(3, Math.max(0, snake.length - 3))
+          : 0;
+      (specialFood.effect === "grow" || specialFood.effect === "removePoints"
+        ? audioBad
+        : audioGood
+      ).play();
       break;
     case "blue":
       specialFood.effect = effects[randomNumber(2, 3)];
       changeScore(specialFood.effect === "addPoints" ? 30 : 10);
       specialFood.segmentsToChange +=
-      specialFood.effect === "shrink"
-      ? Math.min(3, Math.max(0, snake.length - 3))
-      : 0;
+        specialFood.effect === "shrink"
+          ? Math.min(3, Math.max(0, snake.length - 3))
+          : 0;
       audioGood.play();
       break;
   }
@@ -280,7 +303,7 @@ const gameLoop = () => {
 
   loopId = setTimeout(() => {
     gameLoop();
-  }, movement);
+  }, speedLevels[currentSpeedLevel]);
 };
 
 gameLoop();
@@ -318,4 +341,12 @@ buttonPlay.addEventListener("click", () => {
   score.innerText = "00";
 
   snake = [...initialSnake];
+});
+
+speedSelector.addEventListener("change", () => {
+  currentSpeedLevel = parseInt(speedSelector.value);
+});
+
+difficultySelector.addEventListener("change", () => {
+  currentDifficultyLevel = difficultySelector.value;
 });
