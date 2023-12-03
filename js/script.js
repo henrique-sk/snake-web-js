@@ -52,6 +52,8 @@ const initialSnake = [
 
 let snake = [...initialSnake];
 
+let gameOverState = false;
+
 const changeScore = (points) => {
   const currentScore = parseInt(score.innerText, 10);
   const newScore = Math.max(0, currentScore + points);
@@ -297,7 +299,12 @@ const checkCollision = () => {
   });
 
   if (wallCollision || selfCollision) {
-    gameOver();
+    if (!gameOverState) {
+      gameOverState = true;
+      gameOver();
+    }
+  } else {
+    gameOverState = false;
   }
 };
 
