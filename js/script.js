@@ -25,7 +25,9 @@ const initialSnake = [
 let snake = [...initialSnake];
 
 const changeScore = (points) => {
-  score.innerText = +score.innerText + points;
+  const currentScore = parseInt(score.innerText, 10);
+  const newScore = Math.max(0, currentScore + points);
+  score.innerText = newScore;
 };
 
 const randomNumber = (min, max) => {
@@ -55,12 +57,12 @@ const food = {
 const specialFood = {
   x: randomPosition(),
   y: randomPosition(),
-  colors: ["red", "blue"],
-  effects: ["grow", "shrink"],
+  colors: ["red", "green", "blue"],
+  effects: ["grow", "removePoints", "shrink", "addPoints"],
   timer: 5000,
   segmentsToChange: 0,
   chance: 0,
-  chanceOfEffect: 0,
+  chanceOfColor: 0,
 };
 
 let direction, loopId;
@@ -76,18 +78,15 @@ const drawFood = () => {
 };
 
 const drawSpecialFood = () => {
-  //console.log("specialFoodChance: ", specialFood.chance);
-  // console.log('specialFoodTimer: ', specialFood.timer);
-  const { x, y, colors, effects, chanceOfEffect } = specialFood;
-  //console.log("specialFoodChanceOfEffect: ", chanceOfEffect);
-  console.log("specialFoodEffect: ", specialFood.effect);
+  console.log(specialFood.timer);
+  const { x, y, colors, chanceOfColor } = specialFood;
   if (specialFood.timer <= 0) {
-    specialFood.chance = randomNumber(3, 3);
-    specialFood.chanceOfEffect = randomNumber(1, 1);
+    specialFood.chance = randomNumber(1, 3);
+    specialFood.chanceOfColor = randomNumber(0, 2);
   } else if (specialFood.chance === 3) {
-    ctx.shadowColor = colors[chanceOfEffect];
-    ctx.fillStyle = colors[chanceOfEffect];
-    specialFood.effect = effects[chanceOfEffect];
+    ctx.shadowColor = colors[chanceOfColor];
+    ctx.fillStyle = colors[chanceOfColor];
+    specialFood.color = colors[chanceOfColor];
     ctx.fillRect(x, y, segmentSize, segmentSize);
   }
 };
@@ -165,24 +164,47 @@ const checkEat = () => {
 const checkSpecialEat = () => {
   const head = snake[snake.length - 1];
   if (head.x === specialFood.x && head.y === specialFood.y) {
-    applySpecialEffect(specialFood.effect);
-    resetSpecialFood();
+    applySpecialEffect(specialFood.color);
+    specialFood.x = -30;
+    specialFood.y = -30;
+    // resetSpecialFood();
   }
 };
 
-const applySpecialEffect = (effect) => {
-  switch (effect) {
-    case "grow":
-      changeScore(10);
-      specialFood.segmentsToChange += 3;
+const applySpecialEffect = (color) => {
+  const { effects } = specialFood;
+  switch (color) {
+    case "red":
+      specialFood.effect = effects[randomNumber(0, 1)];
+      changeScore(specialFood.effect === "removePoints" ? -30 : 10);
+      specialFood.segmentsToChange += specialFood.effect === "grow" ? 3 : 0;
       break;
-    case "shrink":
-      changeScore(10);
-      specialFood.segmentsToChange += Math.min(3, Math.max(0, snake.length - 3));
+    case "green":
+      specialFood.effect = effects[randomNumber(0, 3)];
+      changeScore(
+        specialFood.effect === "grow" || specialFood.effect === "shrink"
+          ? 10
+          : specialFood.effect === "revomePoints"
+          ? -30
+          : +30
+      );
+      specialFood.segmentsToChange +=
+        specialFood.effect === "grow"
+          ? 3
+          : specialFood.effect === "shrink"
+          ? Math.min(3, Math.max(0, snake.length - 3))
+          : 0;
+      break;
+    case "blue":
+      specialFood.effect = effects[randomNumber(2, 3)];
+      changeScore(specialFood.effect === "addPoints" ? 30 : 10);
+      specialFood.segmentsToChange +=
+        specialFood.effect === "shrink"
+          ? Math.min(3, Math.max(0, snake.length - 3))
+          : 0;
       break;
   }
 };
-
 
 const resetSpecialFood = () => {
   specialFood.x = randomPosition();
