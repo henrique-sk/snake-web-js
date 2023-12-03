@@ -41,6 +41,22 @@ canvas {
   }
 }
 
+.music {
+  margin-left: 20px;
+}
+
+.music-controls {
+  display: flex;
+  margin-left: 5px;
+}
+
+.music-button {
+  display: flex;
+  align-items: center;
+  height: 1.5rem; /* Ajuste a altura conforme necessário */
+  /* Outros estilos, se necessário */
+}
+
 .score-container {
   display: flex;
   justify-content: space-between;

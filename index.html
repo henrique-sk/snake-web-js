@@ -33,12 +33,25 @@
       <select id="difficulty-selector">
         <option value="easy">Easy</option>
         <option value="normal" selected>Normal</option>
-        <option value="hard">Difícil</option>
+        <option value="hard">Hard</option>
       </select>
+
+      <label for="music" class="music">Music:</label>
+      <div class="music-controls">
+        <button class="music-button" onclick="toggleMusic()">
+          <span class="material-symbols-outlined" alt="Play"> play_pause </span>
+        </button>
+        <button class="music-button" onclick="playNextMusic()">
+          <span class="material-symbols-outlined" alt="Play"> skip_next </span>
+        </button>
+      </div>
+      <audio id="audioBackground" loop></audio>
     </div>
     <div class="score-container">
       <div class="score">Score: <span class="score-value">00</span></div>
-      <div class="highest-score">Highest Score: <span class="highest-score-value">00</span></div>
+      <div class="highest-score">
+        High Score: <span class="highest-score-value">00</span>
+      </div>
     </div>
 
     <div class="menu-screen">

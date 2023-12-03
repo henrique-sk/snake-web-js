@@ -20,6 +20,29 @@ const audioEat = new Audio("../assets/audioEat.mp3");
 const audioGood = new Audio("../assets/coin-upaif-14631.mp3");
 const audioBad = new Audio("../assets/pixel-death-66829.mp3");
 const audioGameOver = new Audio("../assets/game-over-arcade-6435.mp3");
+const audioBackground = document.getElementById('audioBackground');
+const musicList = [
+  '../assets/acoustic-guitar-loop-f-91bpm-132687.mp3',
+  '../assets/90x27s-rampb-guitar-loop-171092.mp3',
+  '../assets/walk-down-sesame-street-acoustic-gtr-loop-91bpm-143350.mp3'
+];
+let currentMusicIndex = 0;
+
+const playNextMusic = () => {
+  currentMusicIndex = (currentMusicIndex + 1) % musicList.length;
+  audioBackground.src = musicList[currentMusicIndex];
+  audioBackground.play();
+};
+
+const toggleMusic = () => {
+  if (audioBackground.paused) {
+    audioBackground.play();
+  } else {
+    audioBackground.pause();
+  }
+};
+
+playNextMusic();
 
 const savedScore = localStorage.getItem("snakeScore");
 if (savedScore !== null) {
@@ -116,7 +139,6 @@ const drawFood = () => {
 };
 
 const drawSpecialFood = () => {
-  console.log(specialFood.timer);
   const { x, y, colors, chanceOfColor } = specialFood;
   if (specialFood.timer <= 0) {
     specialFood.chance = randomNumber(2, 3);
