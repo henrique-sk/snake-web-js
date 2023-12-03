@@ -6,6 +6,14 @@ Este projeto foi desenvolvido como parte da disciplina de Construção de Págin
 
 O projeto consiste na implementação de um jogo da cobra utilizando JavaScript. A proposta permitia o uso de códigos de terceiros, desde que houvesse referências adequadas ao código de origem.
 
+## Como Jogar
+
+Jogue agora mesmo clicando [aqui](https://snakergb.netlify.app).
+
+Ou clone o repositório e abra o arquivo `index.html` em seu navegador.
+
+Divirta-se jogando o Snake RGB!
+
 ## Créditos e Fontes de Inspiração
 
 ### Tutorial Inicial
@@ -56,10 +64,3 @@ As comidas especiais têm 50% de chance de aparecer a cada 5 segundos.
 6. Pontuação Mais Alta (High Score):
     - A pontuação mais alta é salva no Local Storage.
     - A pontuação mais alta é exibida durante o jogo.
-
-## Como Jogar
-
-1. Clone o repositório.
-2. Abra o arquivo `index.html` em seu navegador.
-
-Divirta-se jogando o Snake RGB!
