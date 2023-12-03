@@ -11,7 +11,7 @@
 body {
   background-color: #191919;
   display: flex;
-  min-height: 100vh;
+  min-height: 93vh;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -20,7 +20,7 @@ body {
 
 h1 {
   font-size: 3rem;
-  margin-bottom: 1rem;
+  margin-bottom: .2rem;
 }
 
 canvas {
@@ -41,18 +41,20 @@ canvas {
   }
 }
 
-.score {
+.score-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 1.8rem;
+  justify-content: space-between;
+  font-size: 1.5rem;
+  margin-bottom: 5px;
 }
 
-.score--value {
+.score-value,
+.highest-score-value {
   font-weight: 700;
-  font-size: 4.5rem;
-  display: block;
-  margin-top: -10px;
+}
+
+.score-value {
+  margin-right: 8rem;
 }
 
 .menu-screen {

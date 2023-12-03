@@ -1,7 +1,7 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
-const score = document.querySelector(".score--value");
+const score = document.querySelector(".score-value");
 const finalScore = document.querySelector(".final-score > span");
 const menu = document.querySelector(".menu-screen");
 const buttonPlay = document.querySelector(".btn-play");
@@ -19,6 +19,18 @@ const canvasSize = 600;
 const audioEat = new Audio("../assets/audioEat.mp3");
 const audioGood = new Audio("../assets/coin-upaif-14631.mp3");
 const audioBad = new Audio("../assets/pixel-death-66829.mp3");
+const audioGameOver = new Audio("../assets/game-over-arcade-6435.mp3");
+
+const savedScore = localStorage.getItem("snakeScore");
+if (savedScore !== null) {
+  score.innerText = savedScore;
+}
+const savedHighestScore = localStorage.getItem("highestSnakeScore");
+const highestScoreElement = document.querySelector(".highest-score-value");
+
+if (savedHighestScore !== null) {
+  highestScoreElement.innerText = savedHighestScore;
+}
 
 canvas.height = canvasSize;
 canvas.width = canvasSize;
@@ -43,7 +55,17 @@ let snake = [...initialSnake];
 const changeScore = (points) => {
   const currentScore = parseInt(score.innerText, 10);
   const newScore = Math.max(0, currentScore + points);
+
   score.innerText = newScore;
+
+  const highestScore = localStorage.getItem("highestSnakeScore") || 0;
+  if (newScore > highestScore) {
+    localStorage.setItem("highestSnakeScore", newScore);
+  }
+
+  localStorage.setItem("snakeScore", newScore);
+  highestScoreElement.innerText = localStorage.getItem("highestSnakeScore") || 0;
+
 };
 
 const randomNumber = (min, max) => {
@@ -282,6 +304,7 @@ const checkCollision = () => {
 const gameOver = () => {
   direction = undefined;
 
+  audioGameOver.play();
   menu.style.display = "flex";
   finalScore.innerText = score.innerText;
   canvas.style.filter = "blur(4px)";
@@ -339,6 +362,8 @@ buttonPlay.addEventListener("click", () => {
   menu.style.display = "none";
   canvas.style.filter = "none";
   score.innerText = "00";
+
+  localStorage.removeItem("snakeScore");
 
   snake = [...initialSnake];
 });
