@@ -3,12 +3,67 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
     <link rel="stylesheet" href="./styles/style.css" />
-    <title>Snakie</title>
+    <title>Snake RGB</title>
   </head>
   <body>
-    <h1>Snakie</h1>
-    <canvas width="600" height="600"></canvas>
+    <h1>
+      Snake
+      <span style="color: red">R</span>
+      <span style="color: green">G</span>
+      <span style="color: blue">B</span>
+    </h1>
+    <div class="settings">
+      <label for="speed-selector">Speed:</label>
+      <select id="speed-selector">
+        <option value="0">Very Slow</option>
+        <option value="1">Slow</option>
+        <option value="2" selected>Normal</option>
+        <option value="3">Fast</option>
+        <option value="4">Very Fast</option>
+      </select>
+
+      <span class="spacer"></span>
+
+      <label for="difficulty-selector">Difficulty:</label>
+      <select id="difficulty-selector">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+
+      <label for="music" class="music">Music:</label>
+      <div class="music-controls">
+        <button class="music-button" onclick="toggleMusic()">
+          <span class="material-symbols-outlined" alt="Play"> play_pause </span>
+        </button>
+        <button class="music-button" onclick="playNextMusic()">
+          <span class="material-symbols-outlined" alt="Play"> skip_next </span>
+        </button>
+      </div>
+      <audio id="audioBackground" loop></audio>
+    </div>
+    <div class="score-container">
+      <div class="score">Score: <span class="score-value">00</span></div>
+      <div class="highest-score">
+        High Score: <span class="highest-score-value">00</span>
+      </div>
+    </div>
+
+    <div class="menu-screen">
+      <span class="game-over">Game Over</span>
+      <span class="final-score">Score <span>00</span></span>
+
+      <button class="btn-play">
+        <span class="material-symbols-outlined"> play_circle </span>
+        Jogar Novamente
+      </button>
+    </div>
+    <canvas></canvas>
     <script src="./js/script.js"></script>
   </body>
 </html>
